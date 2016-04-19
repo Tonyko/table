@@ -1,0 +1,42 @@
+@(message: String)
+
+@main("Table") {
+    <h1>Hello</h1>
+    <table class="display table table-striped table-bordered" id="redis">
+        <thead>
+            <tr>
+                <th>Id</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script type="text/javascript">
+            /* Table initialisation */
+            $(document).ready(function () {
+                $('#redis').dataTable({
+                    serverSide: true,
+                    ordering: false,
+                    searching: false,
+                    ajax: function (data, f) {
+                        $.ajax(
+                            "/search", {
+                                contentType: "application/json",
+                                method: "POST",
+                                data: JSON.stringify({
+                                    offset: data.start,
+                                    limit: data.length
+                                })
+                            }
+                        ).done(function (response) {
+                            f($.extend(response, { draw: data.draw }));
+                        })
+                    },
+                    scrollY: 1000,
+                    scroller: {
+                        loadingIndicator: true
+                    }
+                });
+            });
+    </script>
+}
