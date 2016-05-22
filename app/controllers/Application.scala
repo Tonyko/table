@@ -64,7 +64,7 @@ class Application extends Controller {
       sql"insert into records(who,whom,ammount,signature) values ($who, $whom, $amount, $signature)".update.apply()
       Ok
     }) getOrElse {
-      Logger.error(parse.json.toString)
+      Logger.error(request.body.toString())
       BadRequest
     }
   }
