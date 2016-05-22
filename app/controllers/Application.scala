@@ -15,11 +15,11 @@ class Application extends Controller {
   implicit val dataTableResultFormat: OFormat[DataTableResult] =
     Json.format[DataTableResult]
 
-  case class Record(id: Int, who: String, whom: String, ammount: Double, signature: Int)
+  case class Record(id: Int, who: String, whom: String, ammount: Double, signature: Long)
 
   object Record extends SQLSyntaxSupport[Record] {
     def apply(rs: WrappedResultSet) = new Record(
-      rs.int("id"), rs.string("who"), rs.string("whom"), rs.double("ammount"), rs.int("signature"))
+      rs.int("id"), rs.string("who"), rs.string("whom"), rs.double("ammount"), rs.long("signature"))
   }
 
   def index = Action {
@@ -59,12 +59,15 @@ class Application extends Controller {
       who <- (request.body \ "from").asOpt[String]
       whom <- (request.body \ "to").asOpt[String]
       amount <- (request.body \ "amount").asOpt[Double]
-      signature <- (request.body \ "signature").asOpt[Int]
+      signature <- (request.body \ "signature").asOpt[Long]
     } yield {
       sql"insert into records(who,whom,ammount,signature) values ($who, $whom, $amount, $signature)".update.apply()
       Ok
     }) getOrElse {
       Logger.error(request.body.toString())
+      Logger.error((request.body \ "from").asOpt[String].getOrElse("error"))
+      Logger.error((request.body \ "to").asOpt[String].getOrElse("error"))
+
       BadRequest
     }
   }
