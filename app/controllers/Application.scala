@@ -53,7 +53,7 @@ class Application extends Controller {
 
   def records = Action {
     val records = getRecords
-    Ok(Json.toJson(records.size))
+    Ok(Json.toJson(Response(records.size)))
   }
 
   case class Response(response: Int)
@@ -68,7 +68,7 @@ class Application extends Controller {
     } yield {
       sql"insert into records(who,whom,ammount,signature) values ($who, $whom, $amount, $signature)".update.apply()
 
-      Ok(Json.toJson(getRecords.size))
+      Ok(Json.toJson(Response(getRecords.size)))
     }) getOrElse {
       Logger.error(request.body.toString())
 
