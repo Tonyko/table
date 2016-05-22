@@ -58,12 +58,13 @@ class Application extends Controller {
     (for {
       who <- (request.body \ "from").asOpt[String]
       whom <- (request.body \ "to").asOpt[String]
-      ammount <- (request.body \ "amount").asOpt[Double]
+      amount <- (request.body \ "amount").asOpt[Double]
       signature <- (request.body \ "signature").asOpt[Int]
     } yield {
-      sql"insert into records(who,whom,ammount,signature) values ($who, $whom, $ammount, $signature)".update.apply()
+      sql"insert into records(who,whom,ammount,signature) values ($who, $whom, $amount, $signature)".update.apply()
       Ok
     }) getOrElse {
+      Logger.error(parse.json.toString)
       BadRequest
     }
   }
