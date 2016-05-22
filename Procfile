@@ -1,0 +1,1 @@
+web: target/universal/stage/bin/mdmtable -Dconfig.file=conf/application.conf -Duser.timezone="CET" -Dfile.encoding=UTF-8
