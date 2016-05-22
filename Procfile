@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/mdmtable -Dconfig.file=conf/application.conf -Duser.timezone="CET" -Dfile.encoding=UTF-8
+web: target/universal/stage/bin/mdmtable -Dhttp.port=${PORT} -Dconfig.file=conf/application.conf -Duser.timezone="CET" -Dfile.encoding=UTF-8
