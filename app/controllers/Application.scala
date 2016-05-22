@@ -49,10 +49,15 @@ class Application extends Controller {
     }
   }
 
+  def getRecords: List[Record] = sql"select * from records".map(rs => Record(rs)).list.apply
+
   def records = Action {
-    val records: List[Record] = sql"select * from records".map(rs => Record(rs)).list.apply
+    val records = getRecords
     Ok(Json.toJson(records.size))
   }
+
+  case class Response(response: Int)
+  implicit val responseFormat = Json.format[Response]
 
   def add = Action(parse.json) { implicit request =>
     (for {
@@ -62,11 +67,10 @@ class Application extends Controller {
       signature <- (request.body \ "signature").asOpt[Long]
     } yield {
       sql"insert into records(who,whom,ammount,signature) values ($who, $whom, $amount, $signature)".update.apply()
-      Ok
+
+      Ok(Json.toJson(getRecords.size))
     }) getOrElse {
       Logger.error(request.body.toString())
-      Logger.error((request.body \ "from").asOpt[String].getOrElse("error"))
-      Logger.error((request.body \ "to").asOpt[String].getOrElse("error"))
 
       BadRequest
     }
